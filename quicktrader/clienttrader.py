@@ -15,6 +15,7 @@ class clienttrader():
         self.app = pywinauto.Application().start(self.config['exe_path'])
         self.app.Dlg.wait_not('active')
 
+        
         for op, text in self.clconfig.optional['login'].items():
             self.edit_className(op,self.config[text])
 
@@ -55,18 +56,18 @@ class clienttrader():
         t = {'security':security, 'price':price, 'amount':amount}
         self.leftMenus.select("\\卖出[F2]")
         # self.main.child_window(control_id=1006, class_name="Button").wait('ready')
-        time.sleep(1) # TODO 目前没有更好的方法
+        # time.sleep(1) # TODO 目前没有更好的方法sell
 
         for name,id in self.clconfig.optional["buy"].items():
             self.edit_winid(id,t[name])
             
-        time.sleep(1)
+        # time.sleep(1)
         self.main.child_window(control_id=1006, class_name="Button").click()
-        time.sleep(2)
+        # time.sleep(2)
         self.app.top_window().child_window(control_id=1365).window_text() #委托确认
         self.app.top_window().child_window(class_name='Static',control_id = 1040).window_text()
         self.app.top_window().type_keys("%Y")
-        time.sleep(1)
+        # time.sleep(1)
         self.app.top_window().child_window(control_id=1365).window_text() #提示
         self.app.top_window().child_window(class_name='Static',control_id = 1004).window_text()
         self.app.top_window()["确定"].click()
@@ -87,22 +88,22 @@ class clienttrader():
         self.main.child_window(control_id=1006, class_name="Button").click()
         # time.sleep(0.5)
         self.app.top_window().child_window(control_id=1365).window_text() #委托确认
-        self.app.top_window().child_window(class_name='Static',control_id = 1040).window_text()
+        # self.app.top_window().child_window(class_name='Static',control_id = 1040).window_text()
         self.app.top_window().type_keys("%Y")
         # time.sleep(0.5)
         self.app.top_window().child_window(control_id=1365).window_text() #提示
-        self.app.top_window().child_window(class_name='Static',control_id = 1004).window_text()
+        # self.app.top_window().child_window(class_name='Static',control_id = 1004).window_text()
         self.app.top_window()["确定"].click()
 
 
     def edit_winid(self,control_id,text):
         self.main.child_window(control_id=control_id, class_name="Edit").set_focus()
-        print(text)
+        # print(text)
         self.main.child_window(control_id=control_id, class_name="Edit").set_edit_text(text)
 
 
     def edit_className(self,op,text):
-        self.app.top_window()[op].set_focus()
+        # self.app.top_window()[op].set_focus()
         self.app.top_window()[op].type_keys(text)
 
     code = '0000'

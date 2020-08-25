@@ -4,6 +4,7 @@ import pandas as pd
 import time
 import tushare as ts
 from urllib.request import urlopen, Request
+import os
 
 
 # ------------------------------------------------获取ticks-----------------------------
@@ -73,19 +74,23 @@ def get_tick_data(code,date='2020-08-18',src='tt'):
 
 def get_day_min_data_bytick(code,date = '2020-08-18'):
     str1 = '30'
-    dw = ts.get_tick_data(code,date,src='tt')
-    # print(dw.info())
+    # print(date)
+    if os.path.isfile('C://Users//wby//Documents//date//'+code+date+'.pkl'):
+        dw=pd.read_pickle('C://Users//wby//Documents//date//'+code+date+'.pkl')
+    else:
+        dw = ts.get_tick_data(code,date,src='tt')
+        dw.to_pickle('C://Users//wby//Documents//date//'+code+date+'.pkl')
+    # print(dw)
     i1 = 1
     liprice = []
     lilow = []
     lihigh = []
     liday = []
-    for i in range(1,int(len(dw))):
+    for i in range(0,int(len(dw))):
         if str1 == dw.time[i][3:5]:
-            if int(dw.time[i][7:9])<58:
-                pass
-            else:
-                pass
+            pass
+        elif dw.time[i][:5] == '09:25' or dw.time[i][:5] == '09:29':
+            i1 = i+1
         else:
             d = dw[i1:i]
             # print(d)
@@ -107,6 +112,7 @@ def get_day_min_data_bytick(code,date = '2020-08-18'):
 
 # print(get_day_min_data_bytick('128052','2020-08-21'))
 # dw = ts.get_tick_data('128052',date = '2020-08-21',src='tt')
+# print(dw)
 # dw = get_today_ticks('128052')
 # print(dw.time[19])
 

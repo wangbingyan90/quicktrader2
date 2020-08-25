@@ -11,9 +11,11 @@ def calc_kdj(df):
     df['k'] = pd.DataFrame(rsv).ewm(com=2).mean()
     df['d'] = df['k'].ewm(com=2).mean()
     df['j'] = 3 * df['k'] - 2 * df['d']
+    df['kintend'] = df['k'].diff()
 
     df['kdj'] = df['k']-df['d']
- 
+    df['kdjintend']  = df['kdj'].diff()
+    df['kdjcrossintend'] = df['kdj'] > df['kdjintend']*-1
     # df['kdj'] = 0
     series = df['k']>df['d']
     # df.loc[series[series == True].index, 'kdj'] = 1
@@ -27,12 +29,22 @@ def calc_macd(df, fastperiod=12, slowperiod=26, signalperiod=9):
     ewma26 = df['close'].ewm(span=slowperiod,adjust=False).mean()
     df['dif'] = ewma12-ewma26
     df['dea'] = df['dif'].ewm(span=signalperiod,adjust=False).mean()
-    df['bar'] = (df['dif']-df['dea'])*2
-    df['macd']  = df['bar'].diff()
+
+    df['difintend'] = df['dif'].diff()
+    series2 = df['dif'] > df['difintend']*-1
+    df['difcross'] = 0
+    df.loc[series2[(series2 == True) & (series2.shift() == False)].index, 'difcross'] = 1
+    df.loc[series2[(series2 == False) & (series2.shift() == True)].index, 'difcross'] = -1
 
 
-    # series = df['dif']>0
-    # df.loc[series[series == True].index, 'macd'] = 1
+    df['macd'] = (df['dif']-df['dea'])*2
+    df['macdintend']  = df['macd'].diff()
+
+
+    series = df['macd']>0
+    df['macdcross'] = 0
+    df.loc[series[(series == True) & (series.shift() == False)].index, 'macdcross'] = 1
+    df.loc[series[(series == False) & (series.shift() == True)].index, 'macdcross'] = -1
     return df
 
 def calc_ma(df):
